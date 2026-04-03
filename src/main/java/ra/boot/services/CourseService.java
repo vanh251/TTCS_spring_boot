@@ -1,7 +1,12 @@
 package ra.boot.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import ra.boot.dto.CourseDTO;
 import ra.boot.models.Course;
 import ra.boot.repositories.CourseRepository;
 
@@ -44,5 +49,13 @@ public class CourseService {
         courseRepository.deleteById(id);
     }
 
+    public Page<CourseDTO> getCoursesPaginated(
+            String status, int page, int size, String sortBy, String sortDir) {
+        Sort sort = sortDir.equalsIgnoreCase(Sort.Direction.ASC.name()) ? 
+                Sort.by(sortBy).ascending() : 
+                Sort.by(sortBy).descending();
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return courseRepository.findCoursesWithPaginationAndProjection(status, pageable);
+    }
 
 }

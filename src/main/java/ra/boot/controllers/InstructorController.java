@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ra.boot.dto.InstructorDto;
 import ra.boot.models.Instructor;
 import ra.boot.services.InstructorService;
 
@@ -20,8 +21,24 @@ public class InstructorController {
         this.instructorService = instructorService;
     }
 
+    @GetMapping("/paginate")
+    public ResponseEntity<?> getInstructorByPaginate(
+            @RequestParam(defaultValue = "0") int pageNumber,
+            @RequestParam(defaultValue = "2") int pageSize
+    ){
+        return ResponseEntity.ok(instructorService.getInstructorByPaginate(pageNumber, pageSize));
+    }
+
+    @GetMapping("/sort")
+    public ResponseEntity<?> getInstructorBySort(
+            @RequestParam(defaultValue = "id") String field,
+            @RequestParam(defaultValue = "asc") String order
+    ){
+        return ResponseEntity.ok(instructorService.getInstructorBySort(field, order));
+    }
+
     @GetMapping
-    public ResponseEntity<List<Instructor>> getAllInstructors() {
+    public ResponseEntity<List<InstructorDto>> getAllInstructors() {
         return ResponseEntity.ok(instructorService.getAllInstructors());
     }
 
@@ -54,4 +71,6 @@ public class InstructorController {
         instructorService.deleteInstructor(id);
         return ResponseEntity.noContent().build();
     }
+
+
 }
